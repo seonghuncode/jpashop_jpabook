@@ -17,3 +17,4 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug #JPA or Hibernate가 생성하는 sql을 볼 수 있다.
+    org.hibernate.type: trace # 쿼리 파라미터 로그가 ?로만 나오던 것을 어떤값이 들어있는지 로그로 출력해주는 기능

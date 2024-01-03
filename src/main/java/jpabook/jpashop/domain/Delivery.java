@@ -15,7 +15,7 @@ public class Delivery {
     @Column(name = "delivery_id")
     private Long id;
 
-    @OneToOne(mappedBy = "delivery") //연관관계를 당하는 입장(읽기용)
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY) //연관관계를 당하는 입장(읽기용)
     private Order order;
 
     @Embedded

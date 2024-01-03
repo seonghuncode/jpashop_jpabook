@@ -26,11 +26,18 @@ public class Category {
     //실무에서는 거의 사용하지 않는다. (필드 추가가 불가능 하기 때문)
     private List<Item> items = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;
 
     @OneToMany(mappedBy = "parent")
     private List<Category> child = new ArrayList<>();
+
+
+    //연관관계 메서드
+    public void addChildCategory(Category child){
+        this.child.add(child);
+        child.setParent(this);
+    }
 
 }

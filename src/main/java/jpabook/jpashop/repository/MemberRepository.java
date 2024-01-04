@@ -1,6 +1,7 @@
 package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Member;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -8,10 +9,14 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class MemberRepository {
 
-    @PersistenceContext //
-    private EntityManager em;
+//    @PersistenceContext //
+//    private EntityManager em;
+
+    private final EntityManager em; //spring boot에서 사용할 경우 위의 @PersistenceContext 방법을 이렇게 사용이 가능
+
 
     public void save(Member member){
         em.persist(member);

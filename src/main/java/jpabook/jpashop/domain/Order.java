@@ -1,6 +1,8 @@
 package jpabook.jpashop.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,6 +14,7 @@ import java.util.List;
 @Table(name = "orders")
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) //생성자들을 같은 패키지 내에서만 접근 가능 하도록 설정
 public class Order {
 
     @Id
@@ -23,7 +26,7 @@ public class Order {
     @JoinColumn(name = "member_id") //매핑할 이름
     private Member member;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) //order을 저장하면 -> orderItem도 강제고 persist를 한다.
     //cascade : orderItem에 값을 넣고 저장하기 위해서는 먼저 하고 order를 persist로 저장해주어야 하는데 -> order만 persist해도 자동으로 orderItem을 저장
     private List<OrderItem> orderItems = new ArrayList<>();
 

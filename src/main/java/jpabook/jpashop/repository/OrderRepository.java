@@ -15,7 +15,7 @@ public class OrderRepository {
     private final EntityManager em;
 
     //주문 로직
-    private void save(Order order){
+    public void save(Order order){
         em.persist(order);
     }
 

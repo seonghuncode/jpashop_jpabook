@@ -6,6 +6,7 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
+
   jpa:
     hibernate:
       ddl-auto: create # 애플리케이션 실행 시점에 가지고 있는 모든 테이블을 지우고 다시 자동으로 테이블을 만들어 주는 모드
@@ -18,3 +19,6 @@ logging:
   level:
     org.hibernate.SQL: debug #JPA or Hibernate가 생성하는 sql을 볼 수 있다.
     org.hibernate.type: trace # 쿼리 파라미터 로그가 ?로만 나오던 것을 어떤값이 들어있는지 로그로 출력해주는 기능
+
+
+

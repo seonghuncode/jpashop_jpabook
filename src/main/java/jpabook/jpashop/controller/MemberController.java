@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.naming.Binding;
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -44,6 +45,15 @@ public class MemberController {
         return "redirect:/"; //저장 후 재로딩은 좋지 않기 때문에 redirect를 사용
 
     }
+
+
+    @GetMapping("members")
+    public String list(Model model){
+        List<Member> members = memberService.findMembers();
+        model.addAttribute("members", members);
+        return "members/memberList";
+    }
+
 
 
 }

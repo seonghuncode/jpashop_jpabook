@@ -68,17 +68,23 @@ public class ItemController {
 
     //수정 페이지에서 수정한 데이터가 submit으로 날라오는 url
     @PostMapping("items/{itemId}/edit")
-    public String updateItem(@PathVariable String itemId, @ModelAttribute("form") BookForm form){
+    public String updateItem(@PathVariable Long itemId, @ModelAttribute("form") BookForm form){
 
-        Book book = new Book();
-        book.setId(form.getId());
-        book.setName(form.getName());
-        book.setPrice(form.getPrice());
-        book.setStockQuantity(form.getStockQuantity());
-        book.setAuthor(form.getAuthor());
-        book.setIsbn(form.getIsbn());
+//        Book book = new Book();
+//        book.setId(form.getId());
+//        book.setName(form.getName());
+//        book.setPrice(form.getPrice());
+//        book.setStockQuantity(form.getStockQuantity());
+//        book.setAuthor(form.getAuthor());
+//        book.setIsbn(form.getIsbn());
+//
+//        itemService.saveItem(book);
 
-        itemService.saveItem(book);
+        //Controller에서 위의 경우 처럼 불필요하게 엔티티를 생성하는 것은 좋지 않다
+        //엔티티를 파라미터로 사용하지 않고 필요한 데이터만 넘긴다 --> 유지보수성이 더 좋다
+        // (트랜잭션이 있는 서비스 계층에 식별자와 변경할 데이터를 명확하게 전달!)
+        itemService.updateItem(itemId, form.getName(), form.getPrice(), form.getStockQuantity());
+
         return "redirect:/items";
 
     }

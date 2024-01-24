@@ -27,11 +27,11 @@ public class ItemService {
 
     //준영속성 엔티티를 변경하기 위해 변경 감지를 사용하는 방법
     @Transactional
-    public void updateItem(Long itemId, Book param){
+    public void updateItem(Long itemId, String name, int price, int stockQuantity){
         Item findItem = itemRepository.findOne(itemId); //DB로 부터 영속 상태의 엔티티를 찾아온다 (findItem은 영속상태)
-        findItem.setPrice(param.getPrice());
-        findItem.setName(param.getName());
-        findItem.setStockQuantity(param.getStockQuantity());
+        findItem.setName(name);
+        findItem.setPrice(price);
+        findItem.setStockQuantity(stockQuantity);
         //해당 로직이 끝나묜 Transaction어노테이션으로 인해 해당 트랜잭션이 commit된다. -> JPA는 flush한다(JPA가 변경된 데이터를 찾는다) -> 변경된 데이터를 DB에 반영
     }
 

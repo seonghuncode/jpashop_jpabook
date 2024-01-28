@@ -9,12 +9,61 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController // ==> @Controller +  @ResponseBody(데이터를 json,xml로 바로 보내기 위한 용도)
 @RequiredArgsConstructor
 public class MemberApiController {
 
     private final MemberService memberService;
+
+
+    /*
+    회원 목록 조회
+    문제점
+    1. 기본적인 엔티티의 모든 값이 노출된다.
+    2. 노출을 막기 위해 엔티티에 프레젠테이션 계층 로직이 추가 된다 (엔티티에 @JsonIgnore, 별도의 뷰로직 추가 하게됨)
+    3. 엔티티 변경에 따라 API스펙이 변경
+    => API응답 스펙에 맞추어 별도의 DTO생성 필요
+     */
+    @GetMapping("/api/v1/members")
+    public List<Member> memberV1(){
+        return memberService.findMembers();
+    }
+
+
+    ///api/v1/members의 문제를 해결하기 위한 로직
+    //엔티티에서 반환할 필요한 데이터만 전용 DTO에 맞게 만들어서 반환 가능
+    @GetMapping("/api/v2/members")
+    public Result memberV2(){
+        
+        //값을 가지고 온다
+        List<Member> findMembers = memberService.findMembers();
+        
+        //값을 memberDTO로 변경
+        List<MemberDto> collect = findMembers.stream()
+                .map(m -> new MemberDto(m.getName()))
+                .collect(Collectors.toList());
+        
+        //변경된 값을 넘긴다
+        return new Result(collect);
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T>{
+        //Result룰 <T>로 감싸주어야 객체로 감싸져서 반환된다
+        //api스펙에서 노출하고 싶은것만 작성하면 된다.
+        private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class MemberDto{
+        private String name;
+    }
 
     //외부에서 해당 url로 member객체의 데이터가 넘어오면 회원가입을 하고 아래 응답값으로 id를 반환해 준다
     @PostMapping("/api/v1/members")

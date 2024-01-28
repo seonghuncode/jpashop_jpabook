@@ -74,6 +74,14 @@ public class MemberService {
         return memberRepository.findOne(memberId);
     }
 
+    //수정시 변경감지 사용
+    //절차 : 트랜잭션에서 특정 id의 값을 DB에서 찾아온다 -> 영속성 컨텍스트에 반영 -> 영속상태에서 이름을 반영 -> 트랜잭션이 종료되면서 commit될때 반영
+    @Transactional
+    public void update(Long id, String name){
+        Member member =  memberRepository.findOne(id);
+        member.setName(name);
+    }
+
 
 
 }

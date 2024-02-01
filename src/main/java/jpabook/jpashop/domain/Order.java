@@ -22,6 +22,9 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
+    // 지연로딩 : DB에서 member를 가지고 오는것이 아니라  Order이 데이터만 가지고 온다
+    // member에 null을 넣을 수 없기 때문에 하이버네이트에서 가짜 proxyMember를 사용해서 상속받아 넣어놓는다.
+    // 실제 member를 사용하려고 할때 그때 DB로 부터 member를 가지고 온다 -> json에서 요청할 경우 member에 처리할 수 없는 값이 들어있기때문에 오류 발생
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id") //매핑할 이름
     private Member member;

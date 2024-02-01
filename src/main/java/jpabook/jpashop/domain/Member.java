@@ -24,6 +24,7 @@ public class Member {
     @Embedded //내장 타입을 포함했다는 의미
     private Address address;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member") //하나의 회원이 여러개의 상품 주문, mappedBy : Order의 member와 매핑하는 것이 아닌 매핑 된 것을 의미한다
     private List<Order> orders = new ArrayList<>();
 }

@@ -1,14 +1,19 @@
 package jpabook.jpashop.api;
 
 
+import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +28,7 @@ public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
 
+    //주문조회 (엔티티를 반환하는 방식 -> 이렇게 사용하는 것은 좋지X)
     @GetMapping("/api/v1/simple-orders")
     public List<Order> orderV1(){
         List<Order> all = orderRepository.findAllByString(new OrderSearch());
@@ -43,5 +49,37 @@ public class OrderSimpleApiController {
 
         return all;
     }
+
+    //주문조회 (엔티티 반환이 아닌 DTO를 반환하는 방식)
+    @GetMapping("/api/v2/simple-orders")
+    public List<SimpleOrderDto> ordersV2(){
+        List<Order> orders = orderRepository.findAllByString(new OrderSearch()); //주문조회
+
+        //주문조회한 데이터를 SimpleOrderDto타입으로 변환해서 반환
+        List<SimpleOrderDto> result = orders.stream()
+                .map(o -> new SimpleOrderDto(o))
+                .collect(Collectors.toList());
+        return result;
+    }
+
+    //DTO객체(클라이언트에서 사용할 객체 -> 해당 객체 데이터는 서버인 orderV2()메서드에서 데이터를 API로 반환)
+    //단점 : 레이지 로딩으로 인한 데이터베이스 쿼리 호출이 너무 많다..
+    @Data
+    static class SimpleOrderDto{
+        private Long orderId;
+        private String name;
+        private LocalDateTime orderDate;
+        private OrderStatus orderStatus;
+        private Address address; //배송 정보
+
+        public SimpleOrderDto(Order order){ //엔티티를 받아 DTO를 채운다
+            orderId = order.getId();
+            name = order.getMember().getName(); //Lazy초기화 : 영속성 컨텍스트에서 orderid를 가지고 데이터를 찾는다 -> 없으면 DB에서 데이터를 가지고 온다.
+            orderDate = order.getOrderDate();
+            orderStatus = order.getStatus();
+            address = order.getDelivery().getAddress(); //Lazy초기화
+        }
+    }
+
 
 }

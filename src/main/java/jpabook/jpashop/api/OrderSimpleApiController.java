@@ -62,6 +62,19 @@ public class OrderSimpleApiController {
         return result;
     }
 
+
+    //위의 "api/v2/simple-orders"의 경우 엔티티를 DTO객체로 변환하는데 있어 쿼리가 많이 나가 성능 최적화가 필요하다다
+    @GetMapping("/api/v3/simple-orders")
+    public  List<SimpleOrderDto> iordersV3(){
+        List<Order> orders = orderRepository.finalAllWithMemberDelivery();
+        List<SimpleOrderDto> result = orders.stream()
+                .map(o -> new SimpleOrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+
     //DTO객체(클라이언트에서 사용할 객체 -> 해당 객체 데이터는 서버인 orderV2()메서드에서 데이터를 API로 반환)
     //단점 : 레이지 로딩으로 인한 데이터베이스 쿼리 호출이 너무 많다..
     @Data

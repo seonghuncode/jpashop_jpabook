@@ -57,6 +57,22 @@ public class OrderApiController {
         return result;
     }
 
+
+    //엔티티를 DTO로 반환하는 APT를 fetch join으로 성능 최적화
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> orderV3(){
+        List<Order> orders = orderRepository.findAllWithItem();
+
+        //orders -> DTO로 변환
+        List<OrderDto> result = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+
+
     @Getter
     static class OrderDto{
 

@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -64,6 +65,23 @@ public class OrderApiController {
         List<Order> orders = orderRepository.findAllWithItem();
 
         //orders -> DTO로 변환
+        List<OrderDto> result = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+
+    //엔티티를 DTO로 변환할 경우 일대다관계에서 fetch join을 사용하면 페이징이 불가능 하기 때문에 페이징이 가능하도록 하는 로직
+    @GetMapping("/api/v3.1/orders")
+    public List<OrderDto> orderV3_page(@RequestParam(value = "offset", defaultValue = "0") int offset,
+                                       @RequestParam(value = "limit", defaultValue = "100")int limit){
+
+        //1. OneToOne, ManyToOne의 경우 fetch join에 영향을 주지 않기 때문에 바로 fetch join해서 가지고 온다.
+        List<Order> orders = orderRepository.finalAllWithMemberDelivery(offset, limit);
+
+        //2.
         List<OrderDto> result = orders.stream()
                 .map(o -> new OrderDto(o))
                 .collect(Collectors.toList());

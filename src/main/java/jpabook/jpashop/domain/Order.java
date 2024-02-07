@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ public class Order {
     @JoinColumn(name = "member_id") //매핑할 이름
     private Member member;
 
+    //@BatchSize(size = 1000) //일대다 관계에서 특정 객체에 대해서만 배치 사이즈를 적용하고 싶을 경우 (일대다 관계에서!)
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) //order을 저장하면 -> orderItem도 강제고 persist를 한다.
     //cascade : orderItem에 값을 넣고 저장하기 위해서는 먼저 하고 order를 persist로 저장해주어야 하는데 -> order만 persist해도 자동으로 orderItem을 저장
     private List<OrderItem> orderItems = new ArrayList<>();

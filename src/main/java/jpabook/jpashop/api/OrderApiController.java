@@ -6,6 +6,8 @@ import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.query.OrderQueryDto;
+import jpabook.jpashop.repository.order.query.OrderQueryRepository;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class OrderApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     //엔티티를 직접 노출하는 방법
     @GetMapping("/api/v1/orders")
@@ -87,6 +90,13 @@ public class OrderApiController {
                 .collect(Collectors.toList());
 
         return result;
+    }
+
+
+    //JPA에서 DTO를 직접 조회(일대다관계가 있는 경우?)
+    @GetMapping("/api/v4/orders")
+    public List<OrderQueryDto> orderV4(){
+            return orderQueryRepository.findOrderQueryDtos();
     }
 
 

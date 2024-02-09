@@ -100,6 +100,13 @@ public class OrderApiController {
     }
 
 
+    //JPA에서 DTO를 직잡 조회(n+1에 대한 쿼리 문제를 해결하기 위한 최적화 방법 적용)
+    @GetMapping("/api/v5/orders")
+    public List<OrderQueryDto> orderV5(){
+        return orderQueryRepository.findAllByDto_optimization();
+    }
+
+
 
     @Getter
     static class OrderDto{

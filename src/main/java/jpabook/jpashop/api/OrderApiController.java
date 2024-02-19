@@ -11,6 +11,7 @@ import jpabook.jpashop.repository.order.query.OrderFlatDto;
 import jpabook.jpashop.repository.order.query.OrderItemQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryRepository;
+import jpabook.jpashop.service.query.OrderQueryService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,17 +66,20 @@ public class OrderApiController {
     }
 
 
+    private final OrderQueryService orderQueryService;
+
     //엔티티를 DTO로 반환하는 APT를 fetch join으로 성능 최적화
     @GetMapping("/api/v3/orders")
-    public List<OrderDto> orderV3() {
-        List<Order> orders = orderRepository.findAllWithItem();
-
-        //orders -> DTO로 변환
-        List<OrderDto> result = orders.stream()
-                .map(o -> new OrderDto(o))
-                .collect(Collectors.toList());
-
-        return result;
+    public List<jpabook.jpashop.service.query.OrderDto> orderV3() {
+//        List<Order> orders = orderRepository.findAllWithItem();
+//
+//        //orders -> DTO로 변환
+//        List<OrderDto> result = orders.stream()
+//                .map(o -> new OrderDto(o))
+//                .collect(Collectors.toList());
+//
+//        return result;
+        return orderQueryService.orderV3();
     }
 
 

@@ -1,8 +1,12 @@
 package jpabook.jpashop.repository;
 
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jpabook.jpashop.domain.Order;
-import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
+import jpabook.jpashop.domain.OrderStatus;
+import jpabook.jpashop.domain.QMember;
+import jpabook.jpashop.domain.QOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -97,6 +101,46 @@ public class OrderRepository {
         return query.getResultList();
 
     }
+
+    /*
+    findAllByCriteria를 QueryDSL을 사용해서 로직 개선
+    (findAllByCriteria해당 메서드와 같은 기능을 하는 로직)
+     */
+    public List<Order> findAll(OrderSearch orderSearch){
+        //build.gradle에서 생성한 Q파일을 가지고 온다.
+        QOrder order = QOrder.order;
+
+        //변수 선언언
+        QMember member = QMember.member;
+
+        //Entity Manager에 넣는다
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        //실행될때는 자동으로 jpql로 변경되어 실행된다.(jpql이랑 같다)
+        return query.select(order)
+                .from(order)
+                .join(order.member, member)
+                .where(statusEq(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName())) //동적쿼리
+                .limit(1000)
+                .fetch();
+    }
+
+    private BooleanExpression nameLike(String memberName) {
+        if(!StringUtils.hasText(memberName)){
+            return null;
+        }
+        return QMember.member.name.like(memberName);
+    }
+
+    private BooleanExpression statusEq(OrderStatus statusCond){
+        if(statusCond == null){
+            return null;
+        }
+        return QOrder.order.status.eq(statusCond);
+    }
+
+
+
+
 
 
     public List<Order> finalAllWithMemberDelivery() {
